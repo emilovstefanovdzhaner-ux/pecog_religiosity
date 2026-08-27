@@ -1,0 +1,38 @@
+#to read excel files
+library(writexl)
+#to read csv files
+library(readr)
+
+#to create a new data frame with the necessary columns. 
+target_cols <- c("participant","trial_number", "congruency_last", "videosource_last",
+                 "context_last", "word_last", "Circle_y_last", "SOA_last",
+                 "circle_start_last", "reaction_time")
+
+
+#to read the output file if it is in excel format
+df1 <- read_excel("____.xlsx")
+#to read the output file if it is in csv format
+df2 <- read.csv("pecog/1257_test.csv")
+
+
+# Subset each dataframe to the same columns
+df1_sub <- df1[, target_cols]
+df2_sub <- df2[, target_cols]
+
+
+
+
+# if there are multiple files, you should insert them into one file
+df_clean <- rbind(df1_sub, df2_sub, df3_sub, df4_sub, df5_sub, df6_sub, df7_sub, df8_sub, df9_sub)
+
+#If you are working with only one file, this is enough
+df_clean <- rbind(df2_sub)
+
+# Calculate the adjusted reaction time by subtracting circle_start_last
+df_clean$reaction_time_adjusted <- df_clean$reaction_time - df_clean$circle_start_last
+
+#to remove empty entities in "Circle_y_last" to continue data analysis
+df_clean <- df_clean[!is.na(df_clean$Circle_y_last), ]
+
+#Save to Excel
+write_xlsx(df_clean, "pecog/1257_results_cleaned.xlsx")
